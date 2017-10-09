@@ -14,6 +14,7 @@ router
   .delete(booksController.remove);
 
 router
-.route("/saved")
+  .route("/saved")
+  .post(booksController.create);
 
 module.exports = router;

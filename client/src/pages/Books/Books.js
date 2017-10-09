@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import DeleteBtn from "../../components/DeleteBtn";
-import Jumbotron from "../../components/Jumbotron";
+//import Jumbotron from "../../components/Jumbotron";
 import API from "../../utils/API";
 import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../../components/Grid";
 import { List, ListItem } from "../../components/List";
-//import { Input, TextArea, FormBtn } from "../../components/Form";
+import { Input, FormBtn } from "../../components/Form";
 import helpers from '../../utils/helpers';
+//import Search from "../../components/Search";
 
 class Books extends Component {
   state = {
@@ -20,11 +21,15 @@ class Books extends Component {
   // LIFECYCLE EVENT
   componentDidMount() {
     this.loadBooks();
-    helpers.runQuery('trump', '2016', '2018')
-    .then((data) => {
-      this.setState({ results: data.docs });
-    });
   }
+
+  // EVENTS
+    handleSaveClick = (item) => {
+      console.log('save button clicked');
+      helpers.postSaved(item.headline.main, item.web_url, item.pub_date).then(function() {
+        console.log(item);
+      }).then(this.loadBooks())
+    }
 
   loadBooks = () => {
     API.getBooks()
@@ -49,42 +54,82 @@ class Books extends Component {
 
   handleFormSubmit = event => {
     event.preventDefault();
-    if (this.state.title && this.state.url) {
-      API.saveBook({
-        title: this.state.title,
-        url: this.state.url
-      })
-        .then(res => this.loadBooks())
-        .catch(err => console.log(err));
+    if (this.state.term) {
+      helpers.runQuery(this.state.term, this.state.start, this.state.end)
+      .then((data) => {
+        this.setState({ results: data.docs });
+      });
     }
   };
 
   //LIFECYCLE EVENT
   render() {
+    
     return (
       <Container fluid>
         <Row>
+          <form>
+            <Input
+              value={this.state.term}
+              onChange={this.handleInputChange}
+              name="term"
+              placeholder="Keyword (required)"
+            />
+            <Input
+              value={this.state.start}
+              onChange={this.handleInputChange}
+              name="start"
+              placeholder="Start Year"
+            />
+            <Input
+              value={this.state.end}
+              onChange={this.handleInputChange}
+              name="end"
+              placeholder="End Year"
+            />
+            <FormBtn
+              disabled={!(this.state.term)}
+              onClick={this.handleFormSubmit}
+            >
+              Search
+            </FormBtn>
+          </form>
+          <hr />
+        </Row>
+      
+        <Row>
+
           <Col size="md-6">
-            <Jumbotron>
-              <h1>NYT Articles</h1>
-            </Jumbotron>
-            
-              { this.state.results.map(result => (
-                  <p><a href={ result.web_url } target="blank"> { result.headline.main }</a> <button type="button" className="btn btn-default">Save</button></p>
-                ))
-              }
+            <div>
+              <h3>Search Results</h3>
+            </div>                     
+              {this.state.results.length ? (
+              <List>
+                {this.state.results.map(result => (
+                  <ListItem>
+                    <div key= { result.uri } className="list-group"><strong><a href={ result.web_url } target="blank"> { result.headline.main } </a></strong>
+                      <button type="button" className="btn btn-default btn-sm" onClick={() => this.handleSaveClick(result)} >Save</button>
+                    </div> 
+                  </ListItem>
+                ))}
+                
+                </List>
+            ) : (
+              <h5>No results to display: enter search terms above find articles</h5>
+            )}
           </Col>
+
           <Col size="md-6">
-            <Jumbotron>
-              <h1>Books On My List</h1>
-            </Jumbotron>
+            <div>
+              <h3>Saved Articles</h3>
+            </div>
             {this.state.books.length ? (
               <List>
                 {this.state.books.map(book => (
                   <ListItem key={book._id}>
                     <Link to={"/books/" + book._id}>
                       <strong>
-                        {book.title} by {book.url}
+                        {book.title}
                       </strong>
                     </Link>
                     <DeleteBtn onClick={() => this.deleteBook(book._id)} />
@@ -92,7 +137,7 @@ class Books extends Component {
                 ))}
               </List>
             ) : (
-              <h3>No Results to Display</h3>
+              <h5>No saved articles to display</h5>
             )}
           </Col>
         </Row>
@@ -124,4 +169,11 @@ export default Books;
                 Submit Book
               </FormBtn>
             </form>
+
+                          { this.state.results.map(result => (
+                  f<div key= { result.uri } className="list-group"><a href={ result.web_url } target="blank"> { result.headline.main } </a>
+                    <button type="button" className="btn btn-default btn-sm" onClick={() => this.handleSaveClick(result)} >Save</button>
+                  </div>
+                ))
+              }
   */
