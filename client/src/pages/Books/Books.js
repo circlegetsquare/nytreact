@@ -77,16 +77,16 @@ class Books extends Component {
               value={this.state.start}
               onChange={this.handleInputChange}
               name="start"
-              placeholder="Start Year"
+              placeholder="Start Year (required)"
             />
             <Input
               value={this.state.end}
               onChange={this.handleInputChange}
               name="end"
-              placeholder="End Year"
+              placeholder="End Year (required)"
             />
             <FormBtn
-              disabled={!(this.state.term)}
+              disabled={!(this.state.term && this.state.start && this.state.end)}
               onClick={this.handleFormSubmit}
             >
               Search
