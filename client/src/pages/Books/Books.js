@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import DeleteBtn from "../../components/DeleteBtn";
-//import Jumbotron from "../../components/Jumbotron";
+import SaveBtn from "../../components/SaveBtn";
 import API from "../../utils/API";
-import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../../components/Grid";
 import { List, ListItem } from "../../components/List";
 import { Input, FormBtn } from "../../components/Form";
 import helpers from '../../utils/helpers';
-//import Search from "../../components/Search";
 
 class Books extends Component {
   state = {
@@ -98,7 +96,6 @@ class Books extends Component {
         </Row>
       
         <Row>
-
           <Col size="md-6">
             <div>
               <h3>Search Results</h3>
@@ -106,9 +103,9 @@ class Books extends Component {
               {this.state.results.length ? (
               <List>
                 {this.state.results.map(result => (
-                  <ListItem>
-                    <div key= { result.uri } className="list-group"><strong><a href={ result.web_url } target="blank"> { result.headline.main } </a></strong>
-                      <button type="button" className="btn btn-default btn-sm" onClick={() => this.handleSaveClick(result)} >Save</button>
+                  <ListItem key={ result._id }>
+                    <div><strong><a href={ result.web_url } target="blank"> { result.headline.main } </a></strong>
+                      <SaveBtn onClick={() => this.handleSaveClick(result)} />
                     </div> 
                   </ListItem>
                 ))}
@@ -127,11 +124,7 @@ class Books extends Component {
               <List>
                 {this.state.books.map(book => (
                   <ListItem key={book._id}>
-                    <Link to={"/books/" + book._id}>
-                      <strong>
-                        {book.title}
-                      </strong>
-                    </Link>
+                      <strong><a href={ book.url } target="blank"> { book.title } </a></strong>
                     <DeleteBtn onClick={() => this.deleteBook(book._id)} />
                   </ListItem>
                 ))}
@@ -148,32 +141,3 @@ class Books extends Component {
 
 export default Books;
 
-/*
-            <form>
-              <Input
-                value={this.state.title}
-                onChange={this.handleInputChange}
-                name="title"
-                placeholder="Title (required)"
-              />
-              <Input
-                value={this.state.url}
-                onChange={this.handleInputChange}
-                name="url"
-                placeholder="URL (required)"
-              />
-              <FormBtn
-                disabled={!(this.state.url && this.state.title)}
-                onClick={this.handleFormSubmit}
-              >
-                Submit Book
-              </FormBtn>
-            </form>
-
-                          { this.state.results.map(result => (
-                  f<div key= { result.uri } className="list-group"><a href={ result.web_url } target="blank"> { result.headline.main } </a>
-                    <button type="button" className="btn btn-default btn-sm" onClick={() => this.handleSaveClick(result)} >Save</button>
-                  </div>
-                ))
-              }
-  */
