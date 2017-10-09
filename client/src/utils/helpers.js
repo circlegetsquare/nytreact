@@ -4,7 +4,6 @@ const APIKEY = "cd6565bd65d149ad84f23ade76e66355";
 
 const helpers = {
     runQuery: function(term, start, end) {
-        console.log(this.term);
         let formattedTerm = term.trim();
         let formattedStart = start.trim() + '0101';
         let formattedEnd = end.trim() + '1231';
