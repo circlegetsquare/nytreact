@@ -28,8 +28,6 @@ const helpers = {
             return response.data._id;
         });
     }
-    //getSaved:
-    //deleteSaved:
 };
 
 export default helpers;
